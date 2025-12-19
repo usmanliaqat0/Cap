@@ -10,6 +10,10 @@ function createDrizzle() {
 	if (!url.startsWith("mysql://"))
 		throw new Error("DATABASE_URL is not a MySQL URL");
 
+    // Debug logging to verify SSL param removal
+    const urlParts = new URL(url);
+    console.log(`[DB_DEBUG] Connecting to host: ${urlParts.hostname}, path: ${urlParts.pathname}, search: ${urlParts.search}`);
+
 	return drizzle(url);
 }
 

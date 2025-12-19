@@ -1,14 +1,23 @@
 import path from "node:path";
-import { db } from "@cap/database";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import { DrizzleQueryError } from "drizzle-orm";
 import { migrate } from "drizzle-orm/mysql2/migrator";
 
 import { runOrgIdBackfill } from "./migrations/orgid_backfill.ts";
 
 async function runMigrate() {
-	await migrate(db() as any, {
+	console.log("💿 initializing migration connection...");
+	const connection = await mysql.createConnection(process.env.DATABASE_URL!);
+	const migrationDb = drizzle(connection);
+
+	console.log("💿 running migrations...");
+	await migrate(migrationDb, {
 		migrationsFolder: path.join(process.cwd(), "/migrations"),
 	});
+	
+	console.log("💿 closing migration connection...");
+	await connection.end();
 }
 
 function errorIsOrgIdMigration(e: unknown): e is DrizzleQueryError {
