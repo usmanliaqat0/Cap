@@ -19,7 +19,8 @@ export const db = () => {
 	if (!_cached) {
 		_cached = createDrizzle();
 
-		instrumentDrizzleClient(_cached);
+
+		// instrumentDrizzleClient(_cached);
 	}
 	return _cached;
 };

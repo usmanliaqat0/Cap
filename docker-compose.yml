@@ -1,0 +1,63 @@
+version: "3.8"
+services:
+  cap-web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: 'mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@ps-mysql:3306/${MYSQL_DATABASE}?ssl={"rejectUnauthorized":false}'
+      WEB_URL: "http://${DOMAIN}:3000"
+      NEXTAUTH_URL: "http://${DOMAIN}:3000"
+      DATABASE_ENCRYPTION_KEY: ${DATABASE_ENCRYPTION_KEY}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      CAP_AWS_ACCESS_KEY: ${CAP_AWS_ACCESS_KEY}
+      CAP_AWS_SECRET_KEY: ${CAP_AWS_SECRET_KEY}
+      CAP_AWS_BUCKET: ${CAP_AWS_BUCKET}
+      CAP_AWS_REGION: ${CAP_AWS_REGION}
+      S3_PUBLIC_ENDPOINT: "http://${DOMAIN}:3902"
+      S3_INTERNAL_ENDPOINT: "http://minio:9000"
+      TINYBIRD_HOST: "https://api.tinybird.co"
+      NODE_ENV: "production"
+    expose:
+      - 3000
+    depends_on:
+      - ps-mysql
+      - minio
+
+  ps-mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+    command:
+      - --max_connections=1000
+      - --default-authentication-plugin=mysql_native_password
+    expose:
+      - 3306
+    volumes:
+      - ps-mysql:/var/lib/mysql
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    expose:
+      - 9000
+      - 9001
+    ports:
+      - "3902:9000"
+      - "3903:9001"
+    volumes:
+      - minio-data:/data
+
+volumes:
+  ps-mysql:
+    driver: local
+  minio-data:
+    driver: local

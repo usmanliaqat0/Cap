@@ -47,5 +47,8 @@
 	"name": "cap",
 	"engines": {
 		"node": ">=20"
+	},
+	"dependencies": {
+		"pnpm": "^10.26.1"
 	}
 }
