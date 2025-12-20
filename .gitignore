@@ -11,15 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
-.env.production
-.env.development
-.env.test
 target
 .cursorrules
 
 # Editor directories and files
-.vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -51,3 +46,4 @@ tauri.windows.conf.json
 .cursor
 .env*.local
 .docs/
+config.bat

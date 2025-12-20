@@ -6,7 +6,7 @@ services:
       dockerfile: apps/web/Dockerfile
     restart: unless-stopped
     environment:
-      DATABASE_URL: 'mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@ps-mysql:3306/${MYSQL_DATABASE}?ssl={"rejectUnauthorized":false}'
+      DATABASE_URL: 'mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@ps-mysql:3306/${MYSQL_DATABASE}'
       WEB_URL: "http://${DOMAIN}:3000"
       NEXTAUTH_URL: "http://${DOMAIN}:3000"
       DATABASE_ENCRYPTION_KEY: ${DATABASE_ENCRYPTION_KEY}
